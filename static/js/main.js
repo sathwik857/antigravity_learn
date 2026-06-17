@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const refreshBtn = document.getElementById('refresh-btn');
     const refreshSpinner = refreshBtn.querySelector('.spinner-icon');
     const refreshText = refreshBtn.querySelector('.btn-text');
+    const exportCsvBtn = document.getElementById('export-csv-btn');
     const searchInput = document.getElementById('search-input');
     const filterPills = document.querySelectorAll('.pill');
     const notesList = document.getElementById('notes-list');
@@ -17,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailContentState = document.getElementById('detail-content-state');
     const detailDate = document.getElementById('detail-date');
     const detailBadge = document.getElementById('detail-badge');
+    const detailCopyBtn = document.getElementById('detail-copy-btn');
     const detailTitle = document.getElementById('detail-title');
     const detailBody = document.getElementById('detail-body');
     const detailLink = document.getElementById('detail-link');
@@ -260,13 +262,29 @@ document.addEventListener('DOMContentLoaded', () => {
             card.innerHTML = `
                 <div class="card-header">
                     <span class="card-date">${formatDate(note.date)}</span>
-                    <span class="badge badge-${note.category}">${note.category}</span>
+                    <div class="card-actions">
+                        <button class="card-copy-btn" title="Copy preview to clipboard">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                        <span class="badge badge-${note.category}">${note.category}</span>
+                    </div>
                 </div>
                 <h3>${note.title}</h3>
                 <p>${textPreview}</p>
             `;
 
+            // Wire up card click to select
             card.addEventListener('click', () => selectNote(note));
+
+            // Wire up copy button inside card
+            const copyBtn = card.querySelector('.card-copy-btn');
+            copyBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent card selection
+                
+                const copyText = `[BigQuery Release - ${formatDate(note.date)}]\nTitle: ${note.title}\n\n${textPreview}\n\nRead details: ${note.link || 'https://docs.cloud.google.com/bigquery/docs/release-notes'}`;
+                copyTextToClipboard(copyText, copyBtn);
+            });
+
             notesList.appendChild(card);
         });
     }
@@ -297,8 +315,102 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Helper to Copy Text to Clipboard
+    async function copyTextToClipboard(text, buttonEl) {
+        try {
+            await navigator.clipboard.writeText(text);
+            
+            // Visual success feedback
+            const icon = buttonEl.querySelector('i');
+            icon.className = 'fa-solid fa-check';
+            buttonEl.classList.add('copied');
+            
+            setTimeout(() => {
+                icon.className = 'fa-regular fa-copy';
+                buttonEl.classList.remove('copied');
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            showErrorToast('Could not copy to clipboard.');
+        }
+    }
+
+    // Helper to Export Filtered Notes to CSV
+    function exportToCSV() {
+        let filteredNotes = releaseNotes;
+
+        // Apply Tag Category Filter
+        if (currentFilter !== 'all') {
+            filteredNotes = filteredNotes.filter(note => note.category === currentFilter);
+        }
+
+        // Apply Search Text Filter
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            filteredNotes = filteredNotes.filter(note => 
+                note.title.toLowerCase().includes(query) || 
+                note.content.toLowerCase().includes(query)
+            );
+        }
+
+        if (filteredNotes.length === 0) {
+            showErrorToast("No notes available to export.");
+            return;
+        }
+
+        // CSV headers
+        const headers = ["Date", "Category", "Title", "Link", "Content"];
+        const csvRows = [headers.join(",")];
+        
+        for (const note of filteredNotes) {
+            // Strip HTML content and clean double quotes
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = note.content;
+            const plainContent = (tempDiv.textContent || tempDiv.innerText || "")
+                .trim()
+                .replace(/"/g, '""')
+                .replace(/\n/g, ' '); // remove line breaks within cell
+            
+            const cleanTitle = note.title.trim().replace(/"/g, '""');
+            const cleanLink = (note.link || '').trim().replace(/"/g, '""');
+            
+            const row = [
+                `"${formatDate(note.date)}"`,
+                `"${note.category}"`,
+                `"${cleanTitle}"`,
+                `"${cleanLink}"`,
+                `"${plainContent}"`
+            ];
+            csvRows.push(row.join(","));
+        }
+
+        const csvContent = csvRows.join("\n");
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `bigquery_release_notes_${currentFilter}_${new Date().toISOString().slice(0,10)}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
     // Event Listeners
     refreshBtn.addEventListener('click', fetchNotes);
+    
+    exportCsvBtn.addEventListener('click', exportToCSV);
+
+    detailCopyBtn.addEventListener('click', () => {
+        if (!selectedNote) return;
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = selectedNote.content;
+        const plainContent = tempDiv.textContent || tempDiv.innerText || "";
+        
+        const copyText = `[BigQuery Release - ${formatDate(selectedNote.date)}]\nTitle: ${selectedNote.title}\nCategory: ${selectedNote.category}\n\n${plainContent}\n\nFull details: ${selectedNote.link || 'https://docs.cloud.google.com/bigquery/docs/release-notes'}`;
+        copyTextToClipboard(copyText, detailCopyBtn);
+    });
     
     searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value;
