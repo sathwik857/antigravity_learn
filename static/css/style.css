@@ -854,22 +854,39 @@ body {
     }
 }
 
-/* Error Toast Alert */
-.error-toast {
+/* Toast Alerts */
+.toast {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    background: rgba(244, 63, 94, 0.9);
-    border: 1px solid var(--color-deprecated);
     color: white;
     padding: 1rem 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     z-index: 100;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    animation: slideIn 0.3s ease-out;
+    animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.toast-error {
+    background: rgba(244, 63, 94, 0.95);
+    border: 1px solid var(--color-deprecated);
+}
+
+.toast-success {
+    background: rgba(16, 185, 129, 0.95);
+    border: 1px solid var(--color-new);
+}
+
+.toast-info {
+    background: rgba(99, 102, 241, 0.95);
+    border: 1px solid var(--accent);
 }
 
 @keyframes slideIn {
@@ -883,16 +900,44 @@ body {
     }
 }
 
+/* Mobile sliding navigation */
+.back-to-feed-btn {
+    display: none;
+    margin-bottom: 1rem;
+    align-self: flex-start;
+}
+
 /* Responsive adjustments */
 @media (max-width: 900px) {
+    .back-to-feed-btn {
+        display: inline-flex;
+    }
+    
     .app-main {
+        position: relative;
         grid-template-columns: 1fr;
     }
+    
     .feed-section {
+        width: 100%;
+        height: 100%;
         border-right: none;
-        height: 50vh;
     }
+    
     .detail-section {
-        height: 50vh;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg-app);
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 20;
+        padding: 1.5rem;
+    }
+    
+    .app-main.show-details .detail-section {
+        transform: translateX(0);
     }
 }

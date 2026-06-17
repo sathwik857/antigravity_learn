@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const noSelectionState = document.getElementById('no-selection-state');
     const detailContentState = document.getElementById('detail-content-state');
+    const closeDetailBtn = document.getElementById('close-detail-btn');
     const detailDate = document.getElementById('detail-date');
     const detailBadge = document.getElementById('detail-badge');
     const detailCopyBtn = document.getElementById('detail-copy-btn');
@@ -97,12 +98,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${prefix}${title} - ${link}${hashtags}`;
     }
 
-    // Show Error Toast
-    function showErrorToast(message) {
+    // Show General Toast Notification
+    function showToast(message, type = 'error') {
         const toast = document.createElement('div');
-        toast.className = 'error-toast';
+        toast.className = `toast toast-${type}`;
+        
+        let iconClass = 'fa-solid fa-circle-exclamation';
+        if (type === 'success') iconClass = 'fa-solid fa-circle-check';
+        if (type === 'info') iconClass = 'fa-solid fa-circle-info';
+        
         toast.innerHTML = `
-            <i class="fa-solid fa-circle-exclamation"></i>
+            <i class="${iconClass}"></i>
             <span>${message}</span>
         `;
         document.body.appendChild(toast);
@@ -152,18 +158,19 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // If we have notes, auto-select the first one by default if nothing is selected
             if (releaseNotes.length > 0 && !selectedNote) {
-                selectNote(releaseNotes[0]);
+                // We pass a parameter to prevent automatically opening/sliding the drawer on page load on mobile
+                selectNote(releaseNotes[0], false);
             } else if (selectedNote) {
                 // Refresh the selected note content if it still exists in the new list
                 const updatedSelected = releaseNotes.find(n => n.id === selectedNote.id || n.title === selectedNote.title);
                 if (updatedSelected) {
-                    selectNote(updatedSelected);
+                    selectNote(updatedSelected, false);
                 }
             }
 
         } catch (error) {
             console.error("Error loading release notes:", error);
-            showErrorToast(error.message);
+            showToast(error.message, 'error');
             notesList.innerHTML = `
                 <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
                     <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.5rem; color: var(--color-deprecated); margin-bottom: 1rem;"></i>
@@ -178,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Select specific note
-    function selectNote(note) {
+    function selectNote(note, shouldSlideMobile = true) {
         selectedNote = note;
         
         // Highlight in list
@@ -226,6 +233,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Scroll detail view to top
         document.getElementById('detail-panel').scrollTop = 0;
+
+        // Slide panel in on mobile if triggered by user click (not auto-select on load)
+        if (shouldSlideMobile) {
+            appMain.classList.add('show-details');
+        }
     }
 
     // Render Note Cards on the left list panel
@@ -329,14 +341,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Helper to Copy Text to Clipboard
-    async function copyTextToClipboard(text, buttonEl) {
+    async function copyTextToClipboard(text, buttonEl, showNotification = true) {
         try {
             await navigator.clipboard.writeText(text);
             
-            // Visual success feedback
+            // Visual success feedback on the button
             const icon = buttonEl.querySelector('i');
             icon.className = 'fa-solid fa-check';
             buttonEl.classList.add('copied');
+            
+            if (showNotification) {
+                showToast("Copied to clipboard!", "success");
+            }
             
             setTimeout(() => {
                 icon.className = 'fa-regular fa-copy';
@@ -344,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
         } catch (err) {
             console.error('Failed to copy text: ', err);
-            showErrorToast('Could not copy to clipboard.');
+            showToast('Could not copy to clipboard.', 'error');
         }
     }
 
@@ -367,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (filteredNotes.length === 0) {
-            showErrorToast("No notes available to export.");
+            showToast("No notes available to export.", "error");
             return;
         }
 
@@ -408,6 +424,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+
+        showToast(`Exported ${filteredNotes.length} notes to CSV!`, "success");
     }
 
     // Event Listeners
@@ -435,8 +453,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const plainContent = tempDiv.textContent || tempDiv.innerText || "";
         
         const copyText = `[BigQuery Release - ${formatDate(selectedNote.date)}]\nTitle: ${selectedNote.title}\nCategory: ${selectedNote.category}\n\n${plainContent}\n\nFull details: ${selectedNote.link || 'https://docs.cloud.google.com/bigquery/docs/release-notes'}`;
-        copyTextToClipboard(copyText, detailCopyBtn);
+        copyTextToClipboard(copyText, detailCopyBtn, true);
     });
+    
+    if (closeDetailBtn) {
+        closeDetailBtn.addEventListener('click', () => {
+            appMain.classList.remove('show-details');
+        });
+    }
     
     searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value;
@@ -468,6 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
         
         window.open(twitterIntentUrl, '_blank', 'noopener,noreferrer,width=550,height=420');
+        showToast("Opening X Web Intent...", "info");
     });
 
     // Start App by Loading Notes
