@@ -6,19 +6,25 @@ An interactive, responsive web dashboard built with Python Flask and vanilla HTM
 
 ## ✨ Features
 
-*   **Real-Time Sync**: Fetches the official Google Cloud BigQuery release feed (`docs.cloud.google.com/feeds/bigquery-release-notes.xml`) via a Python-based API gateway.
+*   **Real-Time Sync**: Fetches the official Google Cloud BigQuery release feed (`docs.cloud.google.com/feeds/bigquery-release-notes.xml`) via a Python-based API gateway proxy (avoiding browser CORS blocks).
 *   **Automatic Tagging**: Client-side categorization parses descriptions and labels updates with status badges:
     *   🟢 `New` (Emerald) - New features and previews.
     *   🔵 `Changed` (Blue) - Behavior modifications.
     *   🟣 `Fixed` (Purple) - Bug resolutions and hotfixes.
     *   🔴 `Deprecated` (Rose) - Deprecations and retired options.
-*   **Search & Filter**: Instantly search updates or click status pills to filter by categories.
+*   **Search & Filter**: Instantly search titles and content or click status pills to filter by categories.
+*   **Persistent Theme Toggle**: A sun/moon toggle button in the header that swaps root CSS colors between a slate dark mode and a zinc/indigo light mode, preserving your choice in `localStorage`.
+*   **Export to CSV**: A utility button in the header that compiles and downloads a CSV spreadsheet of the *currently visible/filtered* updates.
+*   **Copy to Clipboard**:
+    *   **Card-Level Copy**: Copies a pre-formatted plain-text preview of the card details (Date, Title, Summary, and URL) without shifting your active view.
+    *   **Detail-Level Copy**: Copies the full, plain-text content of the selected update.
+*   **Toast Notifications**: Built-in visual alerts showing feedback toasts for successes (copied text, exported CSV), warnings (character overflows), and info states (redirecting to X).
+*   **Sliding Mobile View**: Fully responsive layout that splits columns side-by-side on desktops and collapses into a sliding drawer panel on mobile/tablet screens (<900px) with a custom "Back to Feed" controller.
 *   **Twitter/X Composer Integration**:
     *   Automatically drafts a tweet with the update title and documentation link.
     *   Dynamically truncates the title to guarantee the total text fits within the **280-character limit**.
     *   Conic-gradient visual indicator ring showing character limits (turns orange at `250+` characters, red at `280+` characters, and disables posting on overflow).
     *   Launches X's Web Intent composer directly to publish your post.
-*   **Glassmorphic UI**: Beautiful slate dark-mode themed cards, smooth glow states, animations, custom scrollbars, and card loading shimmer indicators.
 
 ---
 
@@ -37,14 +43,14 @@ bq-releases-notes/
 ├── .venv/                 # Python local virtual environment
 ├── static/
 │   ├── css/
-│   │   └── style.css      # App stylesheet (Gradients, glassmorphism, animations)
+│   │   └── style.css      # App stylesheet (Gradients, light/dark themes, responsive drawer, toasts)
 │   └── js/
-│       └── main.js        # Engine (API fetches, classification, tweet validation)
+│       └── main.js        # Engine (API fetches, classification, tweet validation, copy/csv utilities)
 ├── templates/
 │   └── index.html         # Main dashboard template
 ├── .gitignore             # Standard project rules for Git ignores
 ├── app.py                 # Flask server (Parses XML namespace feeds to JSON)
-├── README.md              # Project documentation
+├── README.md              # Project documentation (Updated)
 └── requirements.txt       # Python dependency declaration
 ```
 
