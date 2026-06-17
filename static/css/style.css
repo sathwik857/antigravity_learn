@@ -50,38 +50,50 @@
 }
 
 body.light-theme {
-    --bg-app: radial-gradient(125% 125% at 50% 10%, #f8fafc 40%, #e2e8f0 100%);
-    --bg-header: rgba(255, 255, 255, 0.8);
-    --bg-card: rgba(255, 255, 255, 0.85);
-    --bg-card-hover: rgba(241, 245, 249, 0.9);
-    --bg-card-selected: rgba(226, 232, 240, 0.95);
+    --bg-app: radial-gradient(125% 125% at 50% 10%, #fafafa 40%, #f4f4f5 100%); /* Warm paper-like modern tint */
+    --bg-header: rgba(255, 255, 255, 0.85);
+    --bg-card: #ffffff;
+    --bg-card-hover: #fafafa;
+    --bg-card-selected: #f4f4f5;
     
-    --border-color: rgba(203, 213, 225, 0.7);
-    --border-color-hover: rgba(148, 163, 184, 0.8);
-    --border-color-active: rgba(99, 102, 241, 0.8);
+    --border-color: #e4e4e7; /* Zinc 200 */
+    --border-color-hover: #d4d4d8; /* Zinc 300 */
+    --border-color-active: #6366f1; /* Indigo 500 */
     
-    --glow-active: 0 0 20px rgba(99, 102, 241, 0.12);
-    --glow-btn: 0 4px 12px rgba(99, 102, 241, 0.25);
+    --glow-active: 0 10px 15px -3px rgba(99, 102, 241, 0.08), 0 4px 6px -4px rgba(99, 102, 241, 0.08);
+    --glow-btn: 0 4px 14px rgba(99, 102, 241, 0.2);
     
-    --text-primary: #0f172a;    /* Slate 900 */
-    --text-secondary: #475569;  /* Slate 600 */
-    --text-muted: #94a3b8;      /* Slate 400 */
+    --text-primary: #18181b;    /* Zinc 900 */
+    --text-secondary: #52525b;  /* Zinc 600 */
+    --text-muted: #a1a1aa;      /* Zinc 400 */
     
-    --accent: #4f46e5;          /* Slightly deeper Indigo */
+    --accent: #4f46e5;          /* Indigo 600 */
     --accent-hover: #3730a3;
-    --accent-light: rgba(79, 70, 229, 0.08);
+    --accent-light: rgba(79, 70, 229, 0.06);
     
-    --x-twitter: #0f172a;
-    --x-twitter-bg: #f1f5f9;
-    --x-twitter-hover: #e2e8f0;
+    --x-twitter: #18181b;
+    --x-twitter-bg: #f4f4f5;
+    --x-twitter-hover: #e4e4e7;
     
-    --bg-input: #ffffff;
+    --bg-input: #f4f4f5;
     --bg-input-focus: #ffffff;
     --char-ring-inner: #ffffff;
-    --bg-pre: #f1f5f9;
-    --bg-code: rgba(226, 232, 240, 0.9);
-    --color-code: #db2777;      /* Pink 600 */
-    --logo-title-gradient: linear-gradient(to right, #0f172a, #475569);
+    --bg-pre: #f4f4f5;
+    --bg-code: #e4e4e7;
+    --color-code: #be123c;      /* Pink 700 */
+    --logo-title-gradient: linear-gradient(135deg, #18181b 0%, #4f46e5 100%);
+    
+    /* Dedicated high-contrast readable status colors for light theme */
+    --color-new: #047857;       /* Emerald 700 */
+    --bg-new-light: #ecfdf5;    /* Emerald 50 */
+    --color-changed: #1d4ed8;   /* Blue 700 */
+    --bg-changed-light: #eff6ff;/* Blue 50 */
+    --color-fixed: #7e22ce;     /* Purple 700 */
+    --bg-fixed-light: #faf5ff;  /* Purple 50 */
+    --color-deprecated: #be123c;/* Rose 700 */
+    --bg-deprecated-light: #fff1f2;/* Rose 50 */
+    --color-other: #4b5563;     /* Gray 600 */
+    --bg-other-light: #f3f4f6;  /* Gray 50 */
 }
 
 * {
