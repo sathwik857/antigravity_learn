@@ -10,9 +10,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const refreshSpinner = refreshBtn.querySelector('.spinner-icon');
     const refreshText = refreshBtn.querySelector('.btn-text');
     const exportCsvBtn = document.getElementById('export-csv-btn');
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
     const searchInput = document.getElementById('search-input');
     const filterPills = document.querySelectorAll('.pill');
     const notesList = document.getElementById('notes-list');
+
+    // Load Theme Preference on start
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        const icon = themeToggleBtn.querySelector('i');
+        if (icon) icon.className = 'fa-solid fa-moon';
+    } else {
+        document.body.classList.remove('light-theme');
+        const icon = themeToggleBtn.querySelector('i');
+        if (icon) icon.className = 'fa-solid fa-sun';
+    }
     
     const noSelectionState = document.getElementById('no-selection-state');
     const detailContentState = document.getElementById('detail-content-state');
@@ -401,6 +414,19 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshBtn.addEventListener('click', fetchNotes);
     
     exportCsvBtn.addEventListener('click', exportToCSV);
+
+    themeToggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        
+        const icon = themeToggleBtn.querySelector('i');
+        if (document.body.classList.contains('light-theme')) {
+            icon.className = 'fa-solid fa-moon';
+            localStorage.setItem('theme', 'light');
+        } else {
+            icon.className = 'fa-solid fa-sun';
+            localStorage.setItem('theme', 'dark');
+        }
+    });
 
     detailCopyBtn.addEventListener('click', () => {
         if (!selectedNote) return;

@@ -1,6 +1,7 @@
 /* Design System and Global Reset */
 :root {
     --bg-app: radial-gradient(125% 125% at 50% 10%, #030712 40%, #0b1528 100%);
+    --bg-header: rgba(3, 7, 18, 0.8);
     --bg-card: rgba(15, 23, 42, 0.6);
     --bg-card-hover: rgba(30, 41, 59, 0.5);
     --bg-card-selected: rgba(30, 41, 59, 0.8);
@@ -35,9 +36,52 @@
     --x-twitter-bg: #1e293b;
     --x-twitter-hover: #0f172a;
     
+    --bg-input: rgba(15, 23, 42, 0.8);
+    --bg-input-focus: rgba(15, 23, 42, 0.9);
+    --char-ring-inner: #111827;
+    --bg-pre: #090d16;
+    --bg-code: rgba(30, 41, 59, 0.8);
+    --color-code: #f472b6;
+    --logo-title-gradient: linear-gradient(to right, #ffffff, #94a3b8);
+    
     --font-heading: 'Outfit', sans-serif;
     --font-body: 'Plus Jakarta Sans', sans-serif;
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.light-theme {
+    --bg-app: radial-gradient(125% 125% at 50% 10%, #f8fafc 40%, #e2e8f0 100%);
+    --bg-header: rgba(255, 255, 255, 0.8);
+    --bg-card: rgba(255, 255, 255, 0.85);
+    --bg-card-hover: rgba(241, 245, 249, 0.9);
+    --bg-card-selected: rgba(226, 232, 240, 0.95);
+    
+    --border-color: rgba(203, 213, 225, 0.7);
+    --border-color-hover: rgba(148, 163, 184, 0.8);
+    --border-color-active: rgba(99, 102, 241, 0.8);
+    
+    --glow-active: 0 0 20px rgba(99, 102, 241, 0.12);
+    --glow-btn: 0 4px 12px rgba(99, 102, 241, 0.25);
+    
+    --text-primary: #0f172a;    /* Slate 900 */
+    --text-secondary: #475569;  /* Slate 600 */
+    --text-muted: #94a3b8;      /* Slate 400 */
+    
+    --accent: #4f46e5;          /* Slightly deeper Indigo */
+    --accent-hover: #3730a3;
+    --accent-light: rgba(79, 70, 229, 0.08);
+    
+    --x-twitter: #0f172a;
+    --x-twitter-bg: #f1f5f9;
+    --x-twitter-hover: #e2e8f0;
+    
+    --bg-input: #ffffff;
+    --bg-input-focus: #ffffff;
+    --char-ring-inner: #ffffff;
+    --bg-pre: #f1f5f9;
+    --bg-code: rgba(226, 232, 240, 0.9);
+    --color-code: #db2777;      /* Pink 600 */
+    --logo-title-gradient: linear-gradient(to right, #0f172a, #475569);
 }
 
 * {
@@ -74,7 +118,7 @@ body {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-color);
-    background: rgba(3, 7, 18, 0.8);
+    background: var(--bg-header);
     backdrop-filter: blur(12px);
     z-index: 10;
 }
@@ -106,7 +150,7 @@ body {
     font-family: var(--font-heading);
     font-size: 1.4rem;
     font-weight: 700;
-    background: linear-gradient(to right, #ffffff, #94a3b8);
+    background: var(--logo-title-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -161,10 +205,10 @@ body {
 .search-box input {
     width: 100%;
     padding: 0.75rem 1rem 0.75rem 2.5rem;
-    background: rgba(15, 23, 42, 0.8);
+    background: var(--bg-input);
     border: 1px solid var(--border-color);
     border-radius: 10px;
-    color: white;
+    color: var(--text-primary);
     font-family: var(--font-body);
     font-size: 0.9rem;
     transition: var(--transition-smooth);
@@ -516,17 +560,17 @@ body {
 }
 
 .markdown-content code {
-    background: rgba(30, 41, 59, 0.8);
+    background: var(--bg-code);
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
     font-size: 0.85rem;
     font-family: 'Courier New', Courier, monospace;
-    color: #f472b6;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--color-code);
+    border: 1px solid var(--border-color);
 }
 
 .markdown-content pre {
-    background: #090d16;
+    background: var(--bg-pre);
     padding: 1rem;
     border-radius: 8px;
     overflow-x: auto;
@@ -597,10 +641,10 @@ body {
 
 .composer-body textarea {
     width: 100%;
-    background: rgba(15, 23, 42, 0.6);
+    background: var(--bg-input);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    color: white;
+    color: var(--text-primary);
     font-family: var(--font-body);
     font-size: 0.95rem;
     line-height: 1.5;
@@ -611,8 +655,8 @@ body {
 
 .composer-body textarea:focus {
     outline: none;
-    border-color: rgba(255, 255, 255, 0.3);
-    background: rgba(15, 23, 42, 0.9);
+    border-color: var(--accent);
+    background: var(--bg-input-focus);
 }
 
 .composer-footer {
@@ -644,7 +688,7 @@ body {
     content: '';
     position: absolute;
     inset: 3px;
-    background: #111827;
+    background: var(--char-ring-inner);
     border-radius: 50%;
 }
 
