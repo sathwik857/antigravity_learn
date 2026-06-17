@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigQuery Release Notes Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-database-spin fa-database"></i>
+                </div>
+                <div>
+                    <h1>BigQuery Notes</h1>
+                    <span class="sub-title">Live Release Tracker</span>
+                </div>
+            </div>
+            
+            <div class="controls-area">
+                <button id="refresh-btn" class="btn btn-primary">
+                    <span class="btn-text">Refresh Feed</span>
+                    <span class="spinner-icon hidden"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="app-main">
+            <!-- Left Side: Feed List -->
+            <section class="feed-section">
+                <div class="section-header">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="search-input" placeholder="Search updates...">
+                    </div>
+                    
+                    <div class="filter-pills">
+                        <button class="pill active" data-filter="all">All</button>
+                        <button class="pill" data-filter="new"><span class="dot dot-new"></span>New</button>
+                        <button class="pill" data-filter="changed"><span class="dot dot-changed"></span>Changed</button>
+                        <button class="pill" data-filter="fixed"><span class="dot dot-fixed"></span>Fixed</button>
+                        <button class="pill" data-filter="deprecated"><span class="dot dot-deprecated"></span>Deprecated</button>
+                    </div>
+                </div>
+
+                <div class="feed-list-container">
+                    <div id="notes-list" class="notes-list">
+                        <!-- Loaded notes will appear here -->
+                        <div class="shimmer-container">
+                            <div class="shimmer-card"></div>
+                            <div class="shimmer-card"></div>
+                            <div class="shimmer-card"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Side: Details & Tweet Composer -->
+            <section class="detail-section" id="detail-panel">
+                <div id="no-selection-state" class="detail-empty">
+                    <div class="empty-illustration">
+                        <i class="fa-regular fa-hand-pointer"></i>
+                    </div>
+                    <h2>Select an Update</h2>
+                    <p>Click any release note on the left to read full details and generate a tweet draft.</p>
+                </div>
+
+                <div id="detail-content-state" class="detail-content hidden">
+                    <div class="detail-card note-detail">
+                        <div class="detail-meta">
+                            <span id="detail-date" class="detail-date"></span>
+                            <span id="detail-badge" class="badge"></span>
+                        </div>
+                        <h2 id="detail-title" class="detail-title"></h2>
+                        <div id="detail-body" class="detail-body markdown-content">
+                            <!-- Raw HTML content rendered safely -->
+                        </div>
+                        <a id="detail-link" href="#" target="_blank" class="source-link">
+                            View official release docs <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+
+                    <!-- Tweet Composer Widget -->
+                    <div class="detail-card tweet-composer">
+                        <div class="composer-header">
+                            <h3><i class="fa-brands fa-x-twitter"></i> Compose a Tweet</h3>
+                            <button id="reset-tweet-btn" class="btn btn-icon-only" title="Reset to auto-draft">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="composer-body">
+                            <textarea id="tweet-textarea" rows="4" placeholder="What's happening?"></textarea>
+                        </div>
+
+                        <div class="composer-footer">
+                            <div class="character-counter">
+                                <span id="char-count">0</span>/280
+                                <div id="char-ring" class="char-ring"></div>
+                            </div>
+                            <button id="tweet-btn" class="btn btn-accent">
+                                <i class="fa-brands fa-x-twitter"></i> Tweet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <!-- Main JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
